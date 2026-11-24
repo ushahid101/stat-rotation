@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stats block</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="stats.css">
+  <style>
+    /* demo page only: gives the block room to scroll into view */
+    body { margin: 0; background: #000; font-family: Inter, system-ui, sans-serif; }
+    .demo-spacer { height: 110vh; display: grid; place-items: center; color: #555; font-size: 14px; }
+    .demo-wrap { padding: 0 0 20vh; }
+  </style>
+</head>
+<body>
+  <div class="demo-spacer">Scroll down ↓</div>
+
+  <div class="demo-wrap">
+    <section class="stats" data-stats aria-labelledby="stats-heading">
+      <header class="stats__head">
+        <span class="eyebrow" data-reveal style="--d:0ms">
+          <img class="eyebrow__dot" src="assets/dot-eyebrow.svg" alt="" aria-hidden="true">
+          Why withdrawals matter
+        </span>
+        <div class="stats__copy">
+          <h2 class="stats__title" id="stats-heading" data-reveal style="--d:140ms">Players remember who pays out first.</h2>
+          <p class="stats__body" data-reveal style="--d:280ms">Big games end late, often after banks close. A player who wins at 11:48 p.m. on a Sunday shouldn't be waiting until Tuesday to see the money. Players compare how fast operators pay out.</p>
+        </div>
+      </header>
+
+      <!-- stage: the wheel, plus a veil that hides the outer sides -->
+      <div class="stats__stage" data-stage>
+        <!-- the rotating wheel: first item is the one highlighted on load -->
+        <div class="stats__wheel" data-wheel>
+          <div class="stat">
+            <div class="stat__body">
+              <p class="stat__num"><span class="stat__sym">$</span>10.7B</p>
+              <p class="stat__label">in U.S. iGaming revenue in 2025,<br>up 27.6%<sup>2</sup></p>
+            </div>
+            <span class="stat__arc" aria-hidden="true"></span>
+            <img class="stat__dot" src="assets/dot-top.svg" alt="" aria-hidden="true">
+          </div>
+          <div class="stat">
+            <div class="stat__body">
+              <p class="stat__num">61<span class="stat__sym stat__sym--lg">%</span></p>
+              <p class="stat__label">of gaming winners are shifting to instant payouts<sup>3</sup></p>
+            </div>
+            <span class="stat__arc" aria-hidden="true"></span>
+            <img class="stat__dot" src="assets/dot-top.svg" alt="" aria-hidden="true">
+          </div>
+          <div class="stat">
+            <div class="stat__body">
+              <p class="stat__num stat__num--tight"><span class="stat__sym stat__sym--sm">$</span>166.9B</p>
+              <p class="stat__label">wagered with U.S. commercial sportsbooks in 2025, up 11%<sup>1</sup></p>
+            </div>
+            <span class="stat__arc" aria-hidden="true"></span>
+            <img class="stat__dot" src="assets/dot-top.svg" alt="" aria-hidden="true">
+          </div>
+        </div>
+        <div class="stats__veil" aria-hidden="true"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="stats.js"></script>
+</body>
+</html>

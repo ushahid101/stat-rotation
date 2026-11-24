@@ -1,0 +1,246 @@
+/* ---------------------------------------------------------------
+   Stats block
+   --k scales the whole composition (1 = the 1440px Figma design).
+   stats.js keeps it in sync with the block's width.
+---------------------------------------------------------------- */
+.stats {
+  --k: 1;
+  --bg: #0a0710;
+  --lilac: #aeabff;
+  --R: calc(903px * var(--k));          /* radius the stats travel on   */
+  --stat-w: calc(420px * var(--k));
+  --stat-h: max(calc(262px * var(--k)), 175px);
+  --ring-d: calc(1437.567px * var(--k));
+  --ring-top: calc(var(--stat-h) / 2 + 184.7px * var(--k)); /* ring top edge, relative to stage */
+
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(64px * var(--k));
+  padding: calc(128px * var(--k)) 24px calc(128px * var(--k));
+  border-radius: 20px;
+  background: var(--bg);
+  color: #fff;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- header ---------- */
+.stats__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(64px * var(--k));
+  width: min(850px, 100%);
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 33px;
+  padding: 0 20px;
+  border-radius: 1000px;
+  background: rgba(174, 171, 255, 0.5);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.28),
+              0 8px 15px rgba(0, 0, 0, 0.02);
+  font-size: 14px;
+  line-height: 19px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.eyebrow__dot { width: 7px; height: 7px; display: block; }
+
+.stats__copy {
+  display: flex;
+  flex-direction: column;
+  gap: calc(48px * var(--k));
+}
+.stats__title {
+  margin: 0;
+  font-size: clamp(38px, calc(80px * var(--k)), 80px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.0375em;
+}
+.stats__body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+/* ---------- stage / wheel ---------- */
+.stats__stage {
+  position: relative;
+  width: 100%;
+  height: var(--stat-h);
+  flex: none;
+}
+
+.stats__wheel { position: absolute; inset: 0; }
+
+.stat {
+  --m: 0; /* bottom-fade strength of the text, driven by JS */
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--stat-w);
+  height: var(--stat-h);
+  margin-left: calc(var(--stat-w) / -2);
+  /* pivot = centre of the big wheel, far below the stat.
+     Text, arc and dot all rotate around it together. */
+  transform-origin: 50% calc(50% + var(--R));
+  will-change: transform, opacity, filter;
+}
+
+.stat__body {
+  height: 100%;
+  padding: calc(30.7px * var(--k)) 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(10.25px * var(--k));
+  text-align: center;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, calc(1 - var(--m))) 100%);
+          mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, calc(1 - var(--m))) 100%);
+}
+
+/* The stat's "bullet": a slice of the big stroke circle, fading out on
+   both sides of a dot. The circle is centred on the wheel pivot, so a box
+   that only keeps its top edge is enough. */
+.stat__arc {
+  position: absolute;
+  left: calc(50% - var(--ring-d) / 2);
+  top: var(--ring-top);
+  width: var(--ring-d);
+  height: calc(var(--ring-d) * 0.2);
+  overflow: hidden;
+  pointer-events: none;
+}
+.stat__arc::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--ring-d);
+  border-radius: 50%;
+  border: 1px solid var(--lilac);
+  box-sizing: border-box;
+  /* opaque at the dot, eased down to nothing 26deg either side
+     (about where the section clips it) */
+  -webkit-mask-image: conic-gradient(from -26deg at 50% 50%,
+      transparent 0deg,
+      rgba(0, 0, 0, 0.11) 6.5deg,
+      rgba(0, 0, 0, 0.33) 13deg,
+      rgba(0, 0, 0, 0.63) 19.5deg,
+      #000 26deg,
+      rgba(0, 0, 0, 0.63) 32.5deg,
+      rgba(0, 0, 0, 0.33) 39deg,
+      rgba(0, 0, 0, 0.11) 45.5deg,
+      transparent 52deg,
+      transparent 360deg);
+          mask-image: conic-gradient(from -26deg at 50% 50%,
+      transparent 0deg,
+      rgba(0, 0, 0, 0.11) 6.5deg,
+      rgba(0, 0, 0, 0.33) 13deg,
+      rgba(0, 0, 0, 0.63) 19.5deg,
+      #000 26deg,
+      rgba(0, 0, 0, 0.63) 32.5deg,
+      rgba(0, 0, 0, 0.33) 39deg,
+      rgba(0, 0, 0, 0.11) 45.5deg,
+      transparent 52deg,
+      transparent 360deg);
+}
+.stat__dot {
+  position: absolute;
+  left: 50%;
+  top: var(--ring-top);
+  width: calc(10.756px * var(--k));
+  height: calc(10.756px * var(--k));
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Gradient veil over the outer sides of the stage: side stats sit half
+   hidden behind it and are revealed as the wheel brings them to the middle. */
+.stats__veil {
+  position: absolute;
+  top: 0;
+  bottom: calc(var(--k) * -700px);
+  left: -24px;   /* cover the section's side padding too */
+  right: -24px;
+  pointer-events: none;
+  /* Each side starts at the edge of the highlighted stat (205px from the
+     centre) and runs outwards, so it looks the same at any screen width.
+     Stops are measured from that inner edge. */
+  --veil-w: calc(50% - 205px * var(--k));
+  background:
+    linear-gradient(270deg,
+      rgba(10, 7, 16, 0) 0,
+      rgba(10, 7, 16, 0.14) calc(68px * var(--k)),
+      rgba(10, 7, 16, 0.42) calc(147px * var(--k)),
+      rgba(10, 7, 16, 0.78) calc(237px * var(--k)),
+      var(--bg) calc(328px * var(--k))) left / var(--veil-w) 100% no-repeat,
+    linear-gradient(90deg,
+      rgba(10, 7, 16, 0) 0,
+      rgba(10, 7, 16, 0.14) calc(68px * var(--k)),
+      rgba(10, 7, 16, 0.42) calc(147px * var(--k)),
+      rgba(10, 7, 16, 0.78) calc(237px * var(--k)),
+      var(--bg) calc(328px * var(--k))) right / var(--veil-w) 100% no-repeat;
+}
+
+.stat__num {
+  margin: 0;
+  font-size: calc(128px * var(--k));
+  line-height: 1.1;
+  letter-spacing: -0.0375em;
+  white-space: nowrap;
+}
+.stat__num--tight { letter-spacing: -0.029em; }
+.stat__sym { font-size: 0.516em; color: var(--lilac); }
+.stat__sym--sm { font-size: 0.403em; }
+
+.stat__label {
+  margin: 0;
+  max-width: calc(320px * var(--k));
+  font-size: max(14px, calc(19.211px * var(--k)));
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.stat__label sup {
+  font-size: 0.645em;
+  line-height: 0;
+  vertical-align: baseline;
+  position: relative;
+  top: -0.65em;
+}
+
+/* ---------------------------------------------------------------
+   Scroll-in animation
+   Hidden states only apply once JS has flagged the block as ready,
+   so the content is fully visible without JS.
+---------------------------------------------------------------- */
+[data-anim="ready"] [data-reveal] {
+  opacity: 0;
+  filter: blur(14px);
+}
+[data-anim="ready"].is-in [data-reveal] {
+  opacity: 1;
+  filter: blur(0);
+  transition:
+    opacity 1000ms cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms),
+    filter  1100ms cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms);
+}
+
+/* Without JS: just show the first stat */
+.stats:not([data-anim]) .stat:not(:first-child) { display: none; }
+.stats:not([data-anim]) .stat { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-anim="ready"].is-in [data-reveal] { transition-duration: 1ms; transition-delay: 0ms; }
+}
